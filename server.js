@@ -40,9 +40,6 @@ app.get('/todos',function(req, res){
     }, function(error){
         res.status(500).send();
     });
-
-
-
 });
 
 // GET /todos/:id
