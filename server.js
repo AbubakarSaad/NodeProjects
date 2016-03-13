@@ -63,7 +63,6 @@ app.get('/todos/:id', function(req, res){
 app.post('/todos',function(req, res){
     var body = _.pick(req.body, 'description', 'completed'); // user _.pick to only pick description and completed
 
-
     db.todo.create(body).then(function(todo){
         res.json(todo.toJSON());
     }, function(e){
@@ -77,12 +76,28 @@ app.delete('/todos/:id', function(req, res){
     var todoId = parseInt(req.params.id, 10);
     var matchedTodo = _.findWhere(todos, {id: todoId});
 
-    if(matchedTodo){
-        todos = _.without(todos, matchedTodo);
-        res.json(matchedTodo);
-    }else{
-        res.status(404).json({"error": "no todo found with that id"});
-    }
+    //if(matchedTodo){
+    //    todos = _.without(todos, matchedTodo);
+    //    res.json(matchedTodo);
+    //}else{
+    //    res.status(404).json({"error": "no todo found with that id"});
+    //}
+
+    db.todo.destroy({
+        where: {
+            id: todoId
+        }
+    }).then(function(rowsDeleted){
+        if(rowsDeleted === 0){
+            res.status(400).json({
+                error: 'No todo with id'
+            });
+        }else{
+            res.status(204).send();
+        }
+    }, function(e){
+        res.status(500).send();
+    });
 
 });
 
