@@ -46,7 +46,6 @@ app.get('/todos',function(req, res){
 app.get('/todos/:id', function(req, res){
     var todoId = parseInt(req.params.id, 10);
 
-
     db.todo.findById(todoId).then(function(todo){
         if(!!todo){
             res.json(todo.toJSON());
@@ -75,13 +74,6 @@ app.post('/todos',function(req, res){
 app.delete('/todos/:id', function(req, res){
     var todoId = parseInt(req.params.id, 10);
     var matchedTodo = _.findWhere(todos, {id: todoId});
-
-    //if(matchedTodo){
-    //    todos = _.without(todos, matchedTodo);
-    //    res.json(matchedTodo);
-    //}else{
-    //    res.status(404).json({"error": "no todo found with that id"});
-    //}
 
     db.todo.destroy({
         where: {
@@ -130,6 +122,18 @@ app.put('/todos/:id', function(req,res){
     });
 });
 
+app.post('/users', function(req, res){
+    // filter item that should be allowed to be added for example email and password
+    // user.create if works send 200 
+    // else send a 400
+    var body = _.pick(req.body, 'email', 'password');
+
+    db.user.create(body).then(function(user){
+        res.json(user.toJSON());
+    }, function(e){
+        res.status(400).json(e);
+    });
+});
 
 db.sequelize.sync().then(function(){
     app.listen(PORT, function(){
