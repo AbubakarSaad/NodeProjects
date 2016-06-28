@@ -50,7 +50,7 @@ module.exports = function (sequelize, DataTypes) {
                     if ( typeof body.email !== 'string' || typeof body.password !== 'string') {
                         return reject();
                     }
-
+                    
                     user.findOne({
                         where: {
                             email: body.email
@@ -73,7 +73,7 @@ module.exports = function (sequelize, DataTypes) {
                         var tokenData = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
 
 
-                        user.findById(tokenData.id).then(function () {
+                        user.findById(tokenData.id).then(function (user) {
                             if(user) {
                                 resolve(user);
                             }else{

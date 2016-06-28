@@ -22,20 +22,54 @@ var Todo = sequelize.define('todo',{
     }
 });
 
+var User = sequelize.define('user', {
+    email: Sequelize.STRING,
+});
+
+Todo.belongsTo(User);
+User.hasMany(Todo);
+
 sequelize.sync({
-    // force.true
+    //force: true
 }).then(function(){
     console.log('Everything is synced');
+
+
+    User.findById(1).then(function(user) {
+        user.getTodos({
+            where: {
+                completed: false
+            }
+        }).then(function (todos){
+            todos.forEach(function (todo){
+                console.log(todo.toJSON());
+            });
+        });
+    });
+
+    // User.create({
+    //     email: 'abu@email.com',
+    // }).then(function() {
+    //     return Todo.create({
+    //         description: 'Clean yard'
+    //     });
+    // }).then(function(todo) {
+    //     User.findById(1).then(function (user) {
+    //         user.addTodo(todo);
+    //     });
+    // });
 
     // fetch todo items by its id
     //  print to the screen if it exists using JSON
     //      if it doesn't print an error 'Todo item not found'
 
-    Todo.findById(3).then(function(todo){
-        console.log(todo.toJSON());
-    }).catch(function (e){
-        console.log('Todo Item not found');
-    });
+    // Todo.findById(3).then(function(todo){
+    //     console.log(todo.toJSON());
+    // }).catch(function (e){
+    //     console.log('Todo Item not found');
+    // });
+
+    
 
 
     //Todo.create({
